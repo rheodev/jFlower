@@ -86,7 +86,7 @@ utools.onPluginEnter(({
     optional
 }) => {
     console.log('用户进入插件', code, type, payload);
-    umami.track({ url: '/onPluginEnter' });
+    setTimeout(()=>{umami.track({ url: '/onPluginEnter' })});
     if (/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/.test(code)) {console.log('a')
         let ip = code;
         let id = runTime.hosts.ips[ip].id;console.log(runTime.hosts.ips);
@@ -222,10 +222,13 @@ utools.onPluginReady(() => {
     Utils.log("onPluginReady:runTime:", JSON.parse(JSON.stringify(runTime._settings)));
     console.log(runTime.settings.freeWin)
     try{
-        umami.init({
-            websiteId: '5412c0d4-12dc-43a7-a98c-3c4588ddab43', // Your website id
-            hostUrl: 'https://cloud.umami.is', // URL to your Umami instance
-          });
+          setTimeout(()=>{
+            umami.init({
+                websiteId: '5412c0d4-12dc-43a7-a98c-3c4588ddab43', // Your website id
+                hostUrl: 'https://cloud.umami.is', // URL to your Umami instance
+              });
+            umami.track({ url: '/onPluginReady' });
+        });
     }catch(e){
         console.log(e);
     }
