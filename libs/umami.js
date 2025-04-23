@@ -1,9 +1,16 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
 var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, {
+  enumerable: true,
+  configurable: true,
+  writable: true,
+  value
+}) : obj[key] = value;
 var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
@@ -16,24 +23,32 @@ class Umami {
     this.properties = {};
   }
   init(options) {
-    this.options = { ...this.options, ...options };
+    this.options = {
+      ...this.options,
+      ...options
+    };
   }
-    send(payload, type = "event") {console.log(process)
-    var { hostUrl, userAgent } = this.options;
+  send(payload, type = "event") {
+    var {
+      hostUrl,
+      userAgent
+    } = this.options;
     const httpModule = hostUrl.startsWith('https:') ? require('https') : require('http');
     const parsedUrl = new URL(hostUrl);
-    try{
+    try {
       userAgent = userAgent || `Mozilla/5.0 (${(() => {
         const os = require('os');
         const platformMap = {
           'darwin': `Macintosh; Intel Mac OS X ${os.release().replace(/\./g, '_')}`,
-          'win32': `Windows NT ${os.release().split('.')[0]}; Win64; x64`,
-          'linux': `X11; Linux ${os.release().split('-')[0]}`
+          'win32': `Windows NT ${os.release()}; Win64; x64`,
+          'linux': `X11; Linux ${os.release()}`
         };
         return platformMap[process.platform] || 'Unknown Platform';
       })()}) Chrome/${process.versions.chrome}`;
-    }catch(e){console.error(e)}
-    
+    } catch (e) {
+      console.error(e)
+    }
+
     console.log(userAgent)
     return new Promise((resolve, reject) => {
       const req = httpModule.request({
@@ -43,7 +58,7 @@ class Umami {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'User-Agent':userAgent, //`Mozilla/5.0 Umami/${process.version}`
+          'User-Agent': userAgent || `Mozilla/5.0 Umami/${process.version}`,
         }
       }, (res) => {
         let data = '';
@@ -58,24 +73,19 @@ class Umami {
       });
 
       req.on('error', reject);
-      req.write(JSON.stringify({ type, payload }));
+      req.write(JSON.stringify({
+        type,
+        payload
+      }));
       req.end();
     });
   }
-  send2(payload, type = "event") {
-    const { hostUrl, userAgent } = this.options;
-    return fetch(`${hostUrl}/api/send`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "User-Agent": userAgent || `Mozilla/5.0 Umami/${process.version}`
-      },
-      body: JSON.stringify({ type, payload })
-    });
-  }
+
   track(event, eventData) {
     const type = typeof event;
-    const { websiteId } = this.options;
+    const {
+      websiteId
+    } = this.options;
     switch (type) {
       case "string":
         return this.send({
@@ -84,14 +94,27 @@ class Umami {
           data: eventData
         });
       case "object":
-        return this.send({ website: websiteId, ...event });
+        return this.send({
+          website: websiteId,
+          ...event
+        });
     }
     return Promise.reject("Invalid payload.");
   }
   identify(properties = {}) {
-    this.properties = { ...this.properties, ...properties };
-    const { websiteId } = this.options;
-    return this.send({ website: websiteId, data: { ...this.properties } }, "identify");
+    this.properties = {
+      ...this.properties,
+      ...properties
+    };
+    const {
+      websiteId
+    } = this.options;
+    return this.send({
+      website: websiteId,
+      data: {
+        ...this.properties
+      }
+    }, "identify");
   }
   reset() {
     this.properties = {};
