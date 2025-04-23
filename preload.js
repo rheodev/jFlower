@@ -225,7 +225,6 @@ utools.onPluginReady(() => {
         umami.init({
             websiteId: '5412c0d4-12dc-43a7-a98c-3c4588ddab43', // Your website id
             hostUrl: 'https://cloud.umami.is', // URL to your Umami instance
-            userAgent:'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36'
           });
     }catch(e){
         console.log(e);
