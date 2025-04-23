@@ -546,7 +546,7 @@ var server = {
             //console.log('ip', req.ip)
             runTime.addHistory({
                 ip: req.headers.ip,
-                hostName: runTime.hosts.ips[req.headers.ip]?runTime.hosts.ips[req.headers.ip].hostName:'',
+                hostName: runTime.hosts.ips[req.headers.ip]?runTime.hosts.ips[req.headers.ip].hostName:req.headers.name,
                 id: '',
                 type: 1, //1 from,2 to
                 content: rawData,
@@ -571,7 +571,7 @@ var server = {
 
         var key = runTime.addHistory({
             ip: req.headers.ip,
-            hostName: runTime.hosts.ips[req.headers.ip].hostName,
+            hostName: runTime.hosts.ips[req.headers.ip]?runTime.hosts.ips[req.headers.ip].hostName:req.headers.name,
             id: '',
             type: 1,
             content: runData,
@@ -699,7 +699,7 @@ var server = {
 
             let key = runTime.addHistory({
                 ip: req.headers.ip, //req.ip,
-                hostName: runTime.hosts.ips[req.headers.ip] ? runTime.hosts.ips[req.headers.ip].hostName : '',
+                hostName: runTime.hosts.ips[req.headers.ip] ? runTime.hosts.ips[req.headers.ip].hostName : req.headers.name,
                 id: '',
                 type: 1, //1 from,2 to
                 content: runData,
@@ -768,7 +768,7 @@ var server = {
             Utils.toast(`收到[图片]已复制到剪贴板`);
             runTime.addHistory({
                 ip: req.headers.ip,
-                hostName: runTime.hosts.ips[req.headers.ip].hostName,
+                hostName: runTime.hosts.ips[req.headers.ip]?runTime.hosts.ips[req.headers.ip].hostName :req.headers.name,
                 id: '',
                 type: 1, //1 from,2 to
                 content: rawData,
