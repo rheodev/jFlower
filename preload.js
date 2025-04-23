@@ -2,6 +2,7 @@ global.runTime = require('./runtime');
 var Server = require('./server');
 var Utils = require('./utils');
 var Clients = require('./clients');
+var umami = require('./libs/umami').default;
 //const { runTime } = require('./server');
 //const runtime = require('./runtime');
 
@@ -85,7 +86,7 @@ utools.onPluginEnter(({
     optional
 }) => {
     console.log('用户进入插件', code, type, payload);
-
+    umami.track({ url: '/onPluginEnter' });
     if (/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/.test(code)) {console.log('a')
         let ip = code;
         let id = runTime.hosts.ips[ip].id;console.log(runTime.hosts.ips);
@@ -220,5 +221,15 @@ utools.onPluginReady(() => {
     init();
     Utils.log("onPluginReady:runTime:", JSON.parse(JSON.stringify(runTime._settings)));
     console.log(runTime.settings.freeWin)
+    try{
+        umami.init({
+            websiteId: '5412c0d4-12dc-43a7-a98c-3c4588ddab43', // Your website id
+            hostUrl: 'https://cloud.umami.is', // URL to your Umami instance
+            userAgent:'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36'
+          });
+    }catch(e){
+        console.log(e);
+    }
     
+      console.log(umami)
 });

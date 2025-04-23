@@ -94,7 +94,7 @@ module.exports = {
 
     let key = runTime.addHistory({
       ip: ip,
-      hostName: runTime.hosts[ip].hostName,
+      hostName: runTime.hosts.ips[ip].hostName,
       id: '',
       type: 2, //1 接收方,2 发送方
       content: runData,
@@ -202,10 +202,10 @@ module.exports = {
     runData.startTime = (new Date()).getTime();
     runData.status = 'paused';
     runData.name = file.name;
-
+    
     var key = runTime.addHistory({
       ip: ip,
-      hostName: runTime.hosts[ip].hostName,
+      hostName: runTime.hosts.ips[ip].hostName,
       id: '',
       type: 2, //1 接收方,2 发送方
       content: runData,
@@ -228,7 +228,7 @@ module.exports = {
     }); //
     runTime.addHistory({
       ip: ip,
-      hostName: runTime.hosts[ip].hostName,
+      hostName: runTime.hosts.ips[ip].hostName,
       id: '',
       type: 2, //1 from,2 to
       content: img,
@@ -237,14 +237,14 @@ module.exports = {
     });
   },
 
-  sendText: function (ip, text, cb) {
-    var req = this.sender('text', ip, new Buffer(text).length, cb);
+  sendText: function (ip, text, cb) { 
+    var req = this.sender('text', ip, Buffer.from(text).length, cb);
     req.write(text, 'utf8', () => {
       req.end();
     }); //
     runTime.addHistory({
       ip: ip,
-      hostName: runTime.hosts[ip].hostName,
+      hostName: runTime.hosts.ips[ip].hostName,
       id: '',
       type: 2, //1 from,2 to
       content: text,
@@ -271,7 +271,7 @@ module.exports = {
         'findingCode': runTime.settings.findingCode.code,//server接收到的是小写key：findingcode
       },
       timeout: 2000
-    };
+    };console.log(options);
     if (headers) {
       for (let i in headers) {
         options.headers[i] = headers[i];

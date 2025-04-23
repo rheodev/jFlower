@@ -252,8 +252,12 @@
             <Modal v-model="modal.show" @on-ok="modalOK">
                 <p>{{modal.msg}}</p>
             </Modal>
+            <Modal v-model="androidModal" title="安卓版下载" >
+                <p> 百度：<a href="#" @click.prevent="app.openUrl('https://pan.baidu.com/s/1zTHq4KZ4LK1_gZ99jGqhpA?pwd=fhwu')">https://pan.baidu.com/s/1zTHq4KZ4LK1_gZ99jGqhpA?pwd=fhwu</a></p>
+                <p> 夸克：<a href="#" @click.prevent="app.openUrl('https://pan.quark.cn/s/5cc062405633')">https://pan.quark.cn/s/5cc062405633</a></p>
+            </Modal>
         </Layout>
-        <a href="#" class="float-btns" id="android" @click.prevent="app.openUrl('https://www.pgyer.com/jflower')">
+        <a href="#" class="float-btns" id="android" @click.prevent="androidModal = true">
             <Icon type="logo-android" size="35" />
         </a>
         <a href="#" class="float-btns" id="pull-drawer" @click.prevent="drawer=true">
@@ -354,7 +358,7 @@
             
         </Drawer>
     </div>
-
+   
 </body>
 
 </html>

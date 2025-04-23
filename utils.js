@@ -57,6 +57,8 @@ module.exports = {
                 utools.removeFeature(f[i].code);
             }
         }
+        runTime.hosts.ips = {};
+        runTime.hosts.ids = {};
     },
     addFeature: function (ip, name, id) {
         utools.setFeature({

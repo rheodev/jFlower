@@ -18,7 +18,8 @@ app.ui = new Vue({
             show :false,
             cb :null,
             msg :'',
-        }
+        },
+        androidModal: false,
     },
     computed: {
         // speedSend: function () {
