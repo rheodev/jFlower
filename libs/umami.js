@@ -18,11 +18,23 @@ class Umami {
   init(options) {
     this.options = { ...this.options, ...options };
   }
-    send(payload, type = "event") {
-    const { hostUrl, userAgent } = this.options;
+    send(payload, type = "event") {console.log(process)
+    var { hostUrl, userAgent } = this.options;
     const httpModule = hostUrl.startsWith('https:') ? require('https') : require('http');
     const parsedUrl = new URL(hostUrl);
-
+    try{
+      userAgent = userAgent || `Mozilla/5.0 (${(() => {
+        const os = require('os');
+        const platformMap = {
+          'darwin': `Macintosh; Intel Mac OS X ${os.release().replace(/\./g, '_')}`,
+          'win32': `Windows NT ${os.release().split('.')[0]}; Win64; x64`,
+          'linux': `X11; Linux ${os.release().split('-')[0]}`
+        };
+        return platformMap[process.platform] || 'Unknown Platform';
+      })()}) Chrome/${process.versions.chrome}`;
+    }catch(e){console.error(e)}
+    
+    console.log(userAgent)
     return new Promise((resolve, reject) => {
       const req = httpModule.request({
         hostname: parsedUrl.hostname,
@@ -31,15 +43,7 @@ class Umami {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'User-Agent': userAgent || `Mozilla/5.0 (${(() => {
-              const os = require('os');
-              const platformMap = {
-                'darwin': `Macintosh; Intel Mac OS X ${os.release().replace(/\./g, '_')}`,
-                'win32': `Windows NT ${os.release().split('.')[0]}; Win64; x64`,
-                'linux': `X11; Linux ${os.release().split('-')[0]}`
-              };
-              return platformMap[process.platform] || 'Unknown Platform';
-            })()}) Chrome/${process.versions.chrome}`//`Mozilla/5.0 Umami/${process.version}`
+          'User-Agent':userAgent, //`Mozilla/5.0 Umami/${process.version}`
         }
       }, (res) => {
         let data = '';
