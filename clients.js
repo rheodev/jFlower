@@ -10,8 +10,21 @@ module.exports = {
 
   RSpool:{},//sendFile 的 rs对象池
 
+  getFileErrorMessage: function (err, ip) {
+    let code = err instanceof Error ? String(err.message || '') : String(err || '');
+    if (code === '404') {
+      return '文件接收失败：发送方未提供该文件，可能记录已失效。';
+    }
+    if (code === '403') {
+      return '文件接收失败：发送方拒绝了连接请求。';
+    }
+    return `文件接收失败：无法连接发送方 ${ip}，请检查对方本机IP、端口和防火墙。`;
+  },
+
   sendFile: function (ip, files, cb) {
     var _this = this;
+    this.runTime.type = 'file';
+    this.runTime.targetIp = ip;
     var runData = {};
     var file = files[0];
     let size = runData.total = fs.statSync(file.path).size;
@@ -159,7 +172,7 @@ module.exports = {
           status:status?status:runData.status
       });
   }
-    var req = this.sender('getFile', h.ip, new Buffer('a').length, (err,chunk ,res)=>{
+    var req = this.sender('getFile', h.ip, Buffer.from('a').length, (err,chunk ,res)=>{
     
       if(err === 1){
         ws.write(chunk);
@@ -179,8 +192,11 @@ module.exports = {
           updateProgress('completed');
           return;
         }else{console.log(err)
+          let msg = this.getFileErrorMessage(err, h.ip);
           ws.destroy();
           updateProgress('paused');
+          runTime.updHistory();
+          Utils.toast(msg);
           return;
         }
         
@@ -200,8 +216,10 @@ module.exports = {
       utools.shellShowItemInFolder(runData.path);
     });
     ws.on("error",()=>{
-      updateProgress('paused');
+      updateProgress('error');
       delete this.RSpool[key];
+      runTime.updHistory();
+      Utils.toast('文件接收失败：无法写入接收目录，请检查目录是否可用。');
     });
     //_this.RSpool[key] = [ws];
   },
@@ -213,7 +231,8 @@ module.exports = {
    * @param {*} cb 
    */
   sendFileAsk: function (ip, files, cb) {
-    var _this = this;
+    this.runTime.type = 'fileAsk';
+    this.runTime.targetIp = ip;
     var runData = {};
     var file = files[0];
     let size = runData.total = fs.statSync(file.path).size;
@@ -245,6 +264,8 @@ module.exports = {
     req.end();
   },
   sendImg: function (ip, img, cb) {
+    this.runTime.type = 'img';
+    this.runTime.targetIp = ip;
 
     var req = this.sender('img', ip, img.length, cb)
     req.write(img, 'utf8', () => {
@@ -262,6 +283,8 @@ module.exports = {
   },
 
   sendText: function (ip, text, cb) { 
+    this.runTime.type = 'text';
+    this.runTime.targetIp = ip;
     var req = this.sender('text', ip, Buffer.from(text).length, cb);
     req.write(text, 'utf8', () => {
       req.end();
@@ -373,7 +396,11 @@ console.log(options);
       //   };
       // }
 
-      Utils.toast('发送成功');
+      if (runTime.client.type === 'fileAsk') {
+        Utils.toast('文件请求已发出，等待对方连接下载');
+      } else {
+        Utils.toast('发送成功');
+      }
       //utools.outPlugin();
       //utools.hideMainWindow();
     }
