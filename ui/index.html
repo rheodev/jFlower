@@ -8,357 +8,1314 @@
     <link rel="stylesheet" href="iview/iview.css">
     <script type="text/javascript" src="iview/iview.min.js"></script>
     <style>
+        :root {
+            --bg: #f2f2f7;
+            --bg-top: #f7f8fb;
+            --panel: rgba(255, 255, 255, 0.78);
+            --panel-strong: rgba(255, 255, 255, 0.94);
+            --panel-muted: rgba(255, 255, 255, 0.62);
+            --line: rgba(60, 60, 67, 0.18);
+            --line-strong: rgba(10, 132, 255, 0.3);
+            --ink: #1c1c1e;
+            --muted: #6e6e73;
+            --accent: #0a84ff;
+            --accent-deep: #0066d6;
+            --accent-soft: rgba(10, 132, 255, 0.14);
+            --accent-wash: rgba(10, 132, 255, 0.08);
+            --success: #30d158;
+            --success-soft: rgba(48, 209, 88, 0.14);
+            --danger: #ff453a;
+            --danger-soft: rgba(255, 69, 58, 0.1);
+            --white: #ffffff;
+            --bubble-in: rgba(255, 255, 255, 0.88);
+            --bubble-out: #0a84ff;
+            --bubble-out-ink: #ffffff;
+            --chip-bg: rgba(255, 255, 255, 0.72);
+            --input-bg: rgba(255, 255, 255, 0.84);
+            --input-placeholder: #8e8e93;
+            --focus-ring: rgba(10, 132, 255, 0.34);
+            --track: rgba(60, 60, 67, 0.12);
+            --progress-fill: linear-gradient(90deg, #0a84ff, #5ac8fa);
+            --jump-bg: rgba(28, 28, 30, 0.9);
+            --jump-ink: #f5f5f7;
+            --shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+            --shadow-soft: 0 4px 10px rgba(15, 23, 42, 0.05);
+            --radius-lg: 16px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #1c1c1e;
+                --bg-top: #111214;
+                --panel: rgba(44, 44, 46, 0.84);
+                --panel-strong: rgba(58, 58, 60, 0.94);
+                --panel-muted: rgba(44, 44, 46, 0.72);
+                --line: rgba(118, 118, 128, 0.32);
+                --line-strong: rgba(10, 132, 255, 0.42);
+                --ink: #f5f5f7;
+                --muted: #a1a1a6;
+                --accent: #0a84ff;
+                --accent-deep: #5ac8fa;
+                --accent-soft: rgba(10, 132, 255, 0.2);
+                --accent-wash: rgba(10, 132, 255, 0.14);
+                --success: #32d74b;
+                --success-soft: rgba(50, 215, 75, 0.18);
+                --danger: #ff6961;
+                --danger-soft: rgba(255, 105, 97, 0.18);
+                --bubble-in: rgba(58, 58, 60, 0.88);
+                --bubble-out: #0a84ff;
+                --bubble-out-ink: #ffffff;
+                --chip-bg: rgba(58, 58, 60, 0.84);
+                --input-bg: rgba(44, 44, 46, 0.92);
+                --input-placeholder: #8e8e93;
+                --focus-ring: rgba(10, 132, 255, 0.4);
+                --track: rgba(118, 118, 128, 0.24);
+                --progress-fill: linear-gradient(90deg, #0a84ff, #64d2ff);
+                --jump-bg: rgba(58, 58, 60, 0.92);
+                --jump-ink: #f5f5f7;
+                --shadow: 0 8px 22px rgba(0, 0, 0, 0.26);
+                --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.2);
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         [v-cloak] {
             display: none;
         }
 
+        html,
         body {
-            font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+            height: 100%;
+            margin: 0;
         }
 
-        .ivu-layout {
-            background: none;
-        }
-
-        .file-info {
-            width: 80%;
-            margin: 0 auto;
-        }
-
-        .file-info h1 {
-            font-size: 24px;
-            font-weight: 400;
-        }
-
-        .file-info p {
-            margin: 5px;
-            font-size: 14px;
-            padding-top: 10px;
-        }
-
-        .file-info p:before {
-            content: "";
-            display: block;
-            width: 150px;
-            height: 1px;
-            margin: 0 auto;
-            background: #e0e3e6;
-            position: relative;
-            top: -5px;
-        }
-
-        .file-info span {
-            display: block;
-            padding-top: 10px;
-            color: #657180;
-            font-size: 14px;
-        }
-
-        .file-info i {
-            font-style: normal;
-            color: #515a6e;
-        }
-
-        .file-info .speed {
-            color: #19be6b;
-        }
-
-        .file-info .total {
-            color: #2db7f5;
-        }
-
-        .col {
-            flex-shrink: 0;
-            flex-grow: 1;
-        }
-
-        .float-btns {
-            /* width: 20px;
-            height: 20px; */
-            position: fixed;
-            left: 0;
-            display: flex;
-            align-items: flex-end;
-            font-size: 20px;
-            opacity: .6;
-        }
-
-        .float-btns>.ivu-icon:hover {
-            opacity: 1;
-        }
-        #pull-drawer{
-            bottom: 0;
-        }
-        #android{
-            bottom: 40px;
-        }
-
-
-        #history .ivu-card {
-            background: rgba(255, 255, 255, .85);
-            word-wrap: break-word;
-        }
-
-        #history .ivu-row-flex {
-            padding-bottom: 20px;
-        }
-
-        #history .ivu-scroll-content {
-            min-height: 100%;
-        }
-
-        .ivu-card-head p {
-            font: 16px bold;
-            color: #464c5b;
-        }
-
-        .ivu-card-body{
+        body {
+            overflow: hidden;
+            color: var(--ink);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+            background:
+                linear-gradient(180deg, var(--bg-top) 0%, var(--bg) 62%, var(--bg) 100%);
             position: relative;
         }
 
-        .ivu-card-body .op{
+        body::before,
+        body::after {
             display: none;
         }
-    
 
-        .ivu-card-body:hover .op{
-            display: block;
+        button,
+        textarea,
+        input {
+            font: inherit;
         }
 
-        .ivu-card-body p {
-            font: 14px;
-            color: #657180;
+        button:focus-visible,
+        a:focus-visible,
+        textarea:focus-visible,
+        input:focus-visible,
+        .session-item:focus-visible,
+        .path-link:focus-visible {
+            outline: 3px solid var(--focus-ring);
+            outline-offset: 2px;
         }
-        .ivu-drawer-left .ld{
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        .shell {
+            position: relative;
+            z-index: 1;
+            height: 100vh;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-height: 0;
+        }
+
+        .glass {
+            border: 1px solid var(--line);
+            background: var(--panel);
+            backdrop-filter: blur(18px);
+            box-shadow: var(--shadow);
+        }
+
+        .topbar {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 10px 12px;
+            border-radius: var(--radius-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .topbar::after {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--line-strong), transparent);
+        }
+
+        .topbar-row {
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .topbar-main {
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .plugin-mark {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: none;
             font-size: 14px;
-            color: #353b43;
-            margin: 10px 0;
+            font-weight: 800;
+            color: var(--white);
+            background: linear-gradient(180deg, var(--accent), var(--accent-deep));
+            box-shadow: var(--shadow-soft);
         }
-        .info{
+
+        .plugin-copy {
+            min-width: 0;
+        }
+
+        .plugin-copy h1 {
+            margin: 2px 0 2px;
+            font-size: 16px;
+            line-height: 1.1;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .plugin-copy p {
+            margin: 0;
+            color: var(--muted);
             font-size: 12px;
-            color: #9ea7b4;
         }
-        .bottom-line{
-            border-bottom: 1px solid #edeef0;
-            margin-bottom: 5px;
-            padding-bottom: 2px;
+
+        .top-meta {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .brand img {
+            width: 56px;
+            height: 56px;
+            object-fit: contain;
+            filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.1));
+        }
+
+        .brand-copy {
+            min-width: 0;
+        }
+
+        .brand h1 {
+            margin: 10px 0 6px;
+            font-size: clamp(28px, 3vw, 42px);
+            line-height: 0.96;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+        }
+
+        .brand p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .status-strip {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .status-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 26px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            color: var(--muted);
+            background: var(--chip-bg);
+            border: 1px solid var(--line);
+        }
+
+        .status-chip strong {
+            color: var(--ink);
+            font-weight: 700;
+        }
+
+        .path-chip,
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .path-chip {
+            appearance: none;
+            max-width: 240px;
+            min-height: 28px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: var(--chip-bg);
+            color: var(--ink);
+            cursor: pointer;
+            font-size: 11px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tool-btn,
+        .action-btn,
+        .filter-btn,
+        .jump-btn {
+            appearance: none;
+            border: 1px solid var(--line);
+            cursor: pointer;
+            transition: transform .18s ease, background .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease;
+        }
+
+        .tool-btn,
+        .filter-btn {
+            min-height: 32px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            color: var(--ink);
+            background: var(--panel-strong);
+            box-shadow: none;
+            font-size: 12px;
+        }
+
+        .tool-btn.primary {
+            background: var(--accent);
+            color: var(--white);
+            border-color: transparent;
+            box-shadow: none;
+        }
+
+        .tool-btn:hover,
+        .action-btn:hover,
+        .filter-btn:hover,
+        .jump-btn:hover {
+            transform: translateY(-1px);
+            border-color: var(--line-strong);
+        }
+
+        .tool-btn:disabled,
+        .filter-btn:disabled,
+        .action-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.45;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .workspace {
+            min-height: 0;
+            flex: 1;
+            display: grid;
+            grid-template-columns: 248px minmax(0, 1fr);
+            gap: 8px;
+        }
+
+        .sidebar,
+        .chatbox {
+            min-height: 0;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-head,
+        .chat-head,
+        .composer {
+            padding: 10px 12px;
+        }
+
+        .sidebar-head {
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sidebar-head h2,
+        .chat-head h2 {
+            margin: 0;
+            font-size: 15px;
+            letter-spacing: -0.02em;
+        }
+
+        .sidebar-head p,
+        .chat-head p,
+        .empty p,
+        .hint,
+        .filter-note {
+            margin: 4px 0 0;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .session-toolbar {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sidebar-meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .search-shell {
+            position: relative;
+        }
+
+        .search-shell input {
+            width: 100%;
+            min-height: 34px;
+            padding: 7px 34px 7px 12px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: var(--input-bg);
+            color: var(--ink);
+            outline: none;
+            font-size: 12px;
+        }
+
+        .search-shell input:focus {
+            border-color: var(--line-strong);
+            box-shadow: 0 0 0 4px var(--accent-soft);
+        }
+
+        .search-clear {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 22px;
+            height: 22px;
+            padding: 0;
+            border-radius: 999px;
+            border: none;
+            background: var(--accent-soft);
+            color: var(--accent-deep);
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            min-height: 28px;
+            padding: 4px 10px;
+            font-size: 11px;
+            box-shadow: none;
+        }
+
+        .filter-btn.active {
+            color: var(--white);
+            background: var(--accent);
+            border-color: transparent;
+        }
+
+        .session-list {
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-height: 0;
+            overflow: auto;
+        }
+
+        .session-item {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            background: var(--panel-muted);
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: border-color .18s ease, transform .18s ease, background .18s ease, box-shadow .18s ease;
+        }
+
+        .session-item:hover {
+            transform: translateY(-1px);
+            border-color: var(--line-strong);
+            background: var(--panel-strong);
+        }
+
+        .session-item.active {
+            background: var(--panel-strong);
+            border-color: var(--line-strong);
+            box-shadow: inset 0 0 0 1px var(--accent-soft), var(--shadow-soft);
+        }
+
+        .session-avatar,
+        .chat-avatar {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--accent-soft), transparent), var(--panel-strong);
+            color: var(--accent-deep);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            border: 1px solid var(--line-strong);
+        }
+
+        .session-body {
+            min-width: 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .session-title,
+        .session-meta,
+        .session-preview,
+        .file-title,
+        .row-between {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .session-title strong,
+        .session-preview span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .session-title strong {
+            font-size: 13px;
+        }
+
+        .session-meta,
+        .session-preview,
+        .message-meta,
+        .file-grid,
+        .file-actions,
+        .msg-actions {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .session-stamp {
+            font-size: 10px;
+            color: var(--muted);
+            flex: none;
+        }
+
+        .session-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 22px;
+            height: 18px;
+            padding: 0 6px;
+            border-radius: 999px;
+            color: var(--accent-deep);
+            background: var(--accent-wash);
+            font-weight: 700;
+            font-size: 10px;
+        }
+
+        .online-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 999px;
+            background: rgba(142, 142, 147, 0.75);
+            flex: none;
+        }
+
+        .online-dot.online {
+            background: var(--success);
+            box-shadow: 0 0 0 4px var(--success-soft);
+        }
+
+        .chatbox {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .chat-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .chat-identity {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .chat-copy {
+            min-width: 0;
+        }
+
+        .chat-copy h2 {
+            margin-top: 4px;
+            font-size: 17px;
+            line-height: 1;
+        }
+
+        .chat-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 24px;
+            margin-top: 4px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            color: var(--muted);
+            background: var(--chip-bg);
+            border: 1px solid var(--line);
+        }
+
+        .chat-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .messages-wrap {
+            position: relative;
+            min-height: 0;
+            flex: 1;
+        }
+
+        .messages {
+            height: 100%;
+            overflow: auto;
+            padding: 10px 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0)),
+                repeating-linear-gradient(180deg, transparent 0 30px, rgba(118, 118, 128, 0.08) 30px 31px);
+        }
+
+        .jump-btn {
+            position: absolute;
+            right: 12px;
+            bottom: 12px;
+            min-height: 30px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: var(--jump-bg);
+            color: var(--jump-ink);
+            box-shadow: var(--shadow-soft);
+            border-color: transparent;
+            font-size: 11px;
+        }
+
+        .message-row {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            max-width: 82%;
+            gap: 4px;
+            animation: fadeUp .28s ease both;
+        }
+
+        .message-row.out {
+            align-self: flex-end;
+            align-items: flex-end;
+            text-align: right;
+        }
+
+        .message-meta {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .message-row.out .message-meta {
+            justify-content: flex-end;
+        }
+
+        .sender-pill {
+            display: inline-flex;
+            align-items: center;
+            min-height: 18px;
+            padding: 0 6px;
+            border-radius: 999px;
+            background: var(--chip-bg);
+            color: var(--ink);
+            font-weight: 700;
+            text-transform: none;
+            letter-spacing: 0;
+            font-size: 10px;
+        }
+
+        .bubble {
+            display: inline-block;
+            width: fit-content;
+            max-width: 100%;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            background: var(--bubble-in);
+            padding: 9px 10px;
+            word-break: break-word;
+            box-shadow: none;
+        }
+
+        .message-row.out .bubble {
+            background: var(--bubble-out);
+            color: var(--bubble-out-ink);
+            border-color: transparent;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .bubble img {
+            display: block;
+            max-width: 220px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform .2s ease, box-shadow .2s ease;
+            box-shadow: none;
+        }
+
+        .bubble img.preview {
+            max-width: 320px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .text-content {
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .msg-link {
+            color: var(--accent-deep);
+            text-decoration: none;
+            border-bottom: 1px solid var(--line-strong);
+            cursor: pointer;
+        }
+
+        .message-row.out .msg-link {
+            color: rgba(255, 255, 255, 0.92);
+            border-bottom-color: rgba(255, 255, 255, 0.28);
+        }
+
+        .file-card {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 220px;
+        }
+
+        .file-card strong {
+            font-size: 13px;
+            line-height: 1.35;
+        }
+
+        .file-type {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 34px;
+            height: 22px;
+            padding: 0 8px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: var(--accent-deep);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .message-row.out .file-type {
+            background: rgba(255, 255, 255, 0.12);
+            color: var(--bubble-out-ink);
+        }
+
+        .progress-bar {
+            height: 5px;
+            border-radius: 999px;
+            background: var(--track);
+            overflow: hidden;
+        }
+
+        .progress-bar span {
+            display: block;
+            height: 100%;
+            border-radius: inherit;
+            background: var(--progress-fill);
+        }
+
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 4px 10px;
+        }
+
+        .file-actions,
+        .msg-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .action-btn {
+            min-height: 26px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            color: var(--ink);
+            background: var(--chip-bg);
+            font-size: 11px;
+        }
+
+        .message-row.out .bubble .action-btn {
+            background: rgba(255, 255, 255, 0.12);
+            color: var(--bubble-out-ink);
+            border-color: rgba(255, 255, 255, 0.14);
+        }
+
+        .message-row.out > .msg-actions .action-btn {
+            background: var(--chip-bg);
+            color: var(--ink);
+        }
+
+        .action-btn.danger {
+            color: var(--danger);
+            background: var(--danger-soft);
+        }
+
+        .composer {
+            border-top: 1px solid var(--line);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.24));
+        }
+
+        .composer textarea {
+            width: 100%;
+            min-height: 68px;
+            resize: none;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: var(--input-bg);
+            padding: 9px 10px;
+            color: var(--ink);
+            outline: none;
+            line-height: 1.45;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            font-size: 13px;
+        }
+
+        .composer textarea::placeholder {
+            color: var(--input-placeholder);
+        }
+
+        .composer textarea:focus {
+            border-color: var(--line-strong);
+            box-shadow: 0 0 0 4px var(--accent-soft);
+        }
+
+        .composer-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .composer-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .hint {
+            max-width: none;
+            flex: 1;
+        }
+
+        .hint strong {
+            color: var(--ink);
+        }
+
+        .empty {
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 18px;
+        }
+
+        .empty-card {
+            max-width: 320px;
+            padding: 16px 14px;
+            border-radius: 14px;
+            background: var(--panel-muted);
+            border: 1px solid var(--line);
+            box-shadow: none;
+        }
+
+        .empty-card h2 {
+            margin: 0;
+            font-size: 18px;
+            letter-spacing: -0.02em;
+        }
+
+        .ivu-drawer-body {
+            background: var(--bg);
+        }
+
+        .setting-line {
+            margin-bottom: 12px;
+        }
+
+        .setting-line .ivu-input {
+            border-radius: 12px;
+        }
+
+        .setting-line .path-link {
+            display: block;
+            color: var(--accent);
+            word-break: break-word;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .path-link:hover {
+            color: var(--accent-deep);
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation: none !important;
+                transition: none !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .shell {
+                padding: 8px;
+            }
+
+            .topbar {
+                padding: 10px;
+            }
+
+            .topbar-row {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .toolbar {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                min-height: 220px;
+            }
+
+            .message-row {
+                max-width: 92%;
+            }
+
+            .chat-head {
+                flex-wrap: wrap;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .shell {
+                padding: 6px;
+                gap: 6px;
+            }
+
+            .topbar-main {
+                width: 100%;
+                align-items: flex-start;
+            }
+
+            .messages {
+                padding: 8px 8px 14px;
+            }
+
+            .composer,
+            .chat-head,
+            .sidebar-head {
+                padding: 8px 10px;
+            }
+
+            .chat-copy h2 {
+                font-size: 16px;
+            }
+
+            .message-row,
+            .message-row.out {
+                max-width: 100%;
+            }
+
+            .bubble img,
+            .bubble img.preview {
+                max-width: 100%;
+            }
+
+            .jump-btn {
+                right: 12px;
+                bottom: 12px;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div id="ui" v-cloak>
-        <Layout class="layout" style="position: absolute;left: 0;top: 0;width: 100%; opacity: 0.5;">
-            <Row type="flex" align="middle">
+    <div id="ui" v-cloak class="shell">
+        <div class="sr-only" aria-live="polite">{{statusMessage}}</div>
 
-                <i-col span="8" class="col" align="middle">
-                    <Card :bordered="false" style="width:520px;margin: 50px auto;">
-                        <div style="text-align:center">
-                            <img src="img/logo.png" width="60%">
-                            <h2 style="color: #19be6b;" v-if="runTime.serverState">Serving At {{runTime.localIp + ':' +runTime.localPort}}</h2>
-                                <h2 style="color:#ed4014;" v-if="!runTime.serverState">Error On {{runTime.localIp}}</h2>
+        <header class="topbar glass">
+            <div class="topbar-row">
+                <div class="topbar-main">
+                    <div class="plugin-mark">JF</div>
+                    <div class="plugin-copy">
+                        <h1>jFlower 局域网投送</h1>
+                        <p>{{settings.name || '未命名设备'}} · {{localIp || '未获取到 IP'}} · 端口 {{localPort}}</p>
+                    </div>
+                </div>
+
+                <div class="toolbar">
+                    <button class="tool-btn" :disabled="actions.scan" aria-label="刷新设备列表" title="刷新设备列表" @click="triggerDetect()">{{actions.scan ? '扫描中…' : '扫描设备'}}</button>
+                    <button class="tool-btn" aria-label="打开移动端页面" title="打开移动端页面" @click="openWap">移动端页</button>
+                    <button class="tool-btn primary" aria-label="打开设置面板" title="打开设置面板" @click="drawer = true">设置</button>
+                </div>
+            </div>
+
+            <div class="top-meta">
+                <span class="status-chip"><strong>{{serverState ? '服务正常' : '启动中'}}</strong> {{statusMessage}}</span>
+                <span class="status-chip"><strong>{{onlineCount}}</strong> 台在线 / {{sessions.length}} 台终端</span>
+                <span class="status-chip"><strong>{{sessionFilter === 'online' ? '仅在线' : '全部终端'}}</strong> 当前可见 {{filteredCount}} 台</span>
+                <button class="path-chip" aria-label="选择接收目录" @click="selectDownloadPath">接收目录：{{shortPath(settings.downloadPath)}}</button>
+            </div>
+        </header>
+
+        <section class="workspace">
+            <aside class="sidebar glass">
+                <div class="sidebar-head">
+                    <div>
+                        <h2>终端列表</h2>
+                    </div>
+                    <div class="session-toolbar">
+                        <div class="search-shell">
+                            <input
+                                v-model.trim="sessionQuery"
+                                type="text"
+                                placeholder="搜索设备名、IP 或 ID"
+                                aria-label="搜索会话">
+                            <button v-if="sessionQuery" class="search-clear" aria-label="清空搜索" @click="clearSessionQuery">×</button>
                         </div>
-                    </Card>
-                </i-col>
+                        <div class="filter-row">
+                            <button class="filter-btn" :class="{active: sessionFilter === 'all'}" @click="sessionFilter = 'all'">全部</button>
+                            <button class="filter-btn" :class="{active: sessionFilter === 'online'}" @click="sessionFilter = 'online'">仅在线</button>
+                        </div>
+                        <div class="filter-note">上下方向键可快速切换终端，回车后在右侧发消息。</div>
+                    </div>
+                </div>
 
-            </Row>
-        </Layout>
-        <Layout class="layout" id="history" style="width: 100%; height: 100%;">
-            <Scroll :height="document.documentElement.clientHeight" style="width: 100%;">
+                <div class="session-list">
+                    <template v-if="filteredSessions.length">
+                        <button
+                            v-for="(session, index) in filteredSessions"
+                            :key="session.id"
+                            ref="sessionButtons"
+                            class="session-item"
+                            :class="{active: session.id === activeSessionId}"
+                            :aria-label="'切换到会话 ' + session.hostName"
+                            @click="selectSession(session.id)"
+                            @keydown="handleSessionKeydown(index, $event)">
+                            <span class="session-avatar" aria-hidden="true">{{getInitials(session.hostName)}}</span>
+                            <span class="session-body">
+                                <span class="session-title">
+                                    <strong>{{session.hostName}}</strong>
+                                    <span class="online-dot" :class="{online: session.online}"></span>
+                                </span>
+                                <span class="session-meta">
+                                    <span>{{session.ip || '未知 IP'}}</span>
+                                    <span class="session-stamp">{{session.lastMessageTime ? formatTime(session.lastMessageTime) : '暂无记录'}}</span>
+                                </span>
+                                <span class="session-preview">
+                                    <span>{{sessionPreview(session)}}</span>
+                                    <span class="session-count">{{session.messages.length}}</span>
+                                </span>
+                            </span>
+                        </button>
+                    </template>
 
-                <Row v-for="(item ,index) in _history" :key="index" :s="index" type="flex" align="middle">
-                    <i-col :span="item.type==2 ?(runTime.imgPreView==index ?2:10):2"></i-col>
-                    <i-col span="12" class="col" align="middle">
-                        <i-time :time="item.time" :interval="10" style="color: #9ea7b4;font-size: 12px;"></i-time>
-                        <Card>
-                            <p slot="title" align="left">
+                    <div v-else class="empty">
+                        <div class="empty-card">
+                            <h2>{{sessions.length ? '没有匹配结果' : '暂无设备'}}</h2>
+                            <p>{{sessions.length ? '试试清空搜索词，或者切回全部会话。' : '进入插件后会自动扫描局域网，也可以手动刷新。'}}</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
 
-                                <Icon v-if="item.type==2" type="ios-paper-plane-outline" size="20"></Icon>
-                                {{item.hostName}}({{item.ip}})
-                                <Icon v-if="item.type==1" type="ios-paper-plane-outline" size="20"
-                                    style="transform: rotate(80deg);"></Icon>
-                            </p>
-                            <a v-if="item.contentType=='img' && runTime.imgPreView != index" href="#" slot="extra"
-                                @click.prevent="runTime.imgPreView = index">
-                                <Icon type="ios-eye-outline"  size="20"/>
-                            </a>
-                            <a v-if="item.contentType=='img' && runTime.imgPreView == index" href="#" slot="extra"
-                                @click.prevent="runTime.imgPreView = -1">
-                                <Icon type="ios-eye-off-outline"  size="20"/>
-                            </a>
-                            <a v-if="item.contentType=='file'" href="#" slot="extra"
-                                @click.prevent="copy(item.content.path,item.contentType)">
-                                <Icon type="ios-copy-outline" size="20"></Icon>
-                            </a>
-                            <a v-if="item.contentType!='file'" href="#" slot="extra"
-                                @click.prevent="copy(item.content,item.contentType)">
-                                <Icon type="ios-copy-outline" size="20"></Icon>
-                            </a>
-                            <a v-if="item.contentType=='img'" href="#" slot="extra"
-                                @click.prevent="saveImg(item.content)">
-                                <Icon type="ios-download-outline"  size="20"/>
-                            </a>
-                            <a href="#" slot="extra"
-                                @click.prevent="del(index)">
-                                <Icon type="ios-trash-outline" size="20"></Icon>
-                            </a>
-                            <a v-if="item.contentType=='file' && item.content.transferred < item.content.total" href="#" slot="extra"
-                                @click.prevent="del(index)">
-                                <Icon type="ios-close-circle-outline" size="20" />
-                            </a>
-                            <p v-if="item.contentType=='text'">
-                                <span v-html="parseText(item.content)"></span>
-                            </p>
-                            <p v-if="item.contentType=='img'">
-                                <img :src="item.content" style="max-width: 100%;" />
-                            </p>
-                            <i-circle v-if="item.contentType=='file'" :size="300" :trail-width="4" :stroke-width="5"
-                                :percent="Math.round((item.content.transferred/item.content.total)*100)"
-                                stroke-color="#2db7f5">
-                                <div class="file-info">
-                                    <h1 v-on:click="showFile(item.content.path)"
-                                        style="color: #2db7f5;cursor: pointer;">{{item.content.name}}</h1>
+            <main class="chatbox glass">
+                <div v-if="activeSession" class="chat-head">
+                    <div class="chat-identity">
+                        <span class="chat-avatar" aria-hidden="true">{{getInitials(activeSession.hostName)}}</span>
+                        <div class="chat-copy">
+                            <h2>{{activeSession.hostName}}</h2>
+                            <div class="chat-status">
+                                <span class="online-dot" :class="{online: activeSession.online}"></span>
+                                <span>{{activeSession.ip || '未知 IP'}} · {{activeSession.messages.length}} 条交互记录</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-actions">
+                        <button class="tool-btn" :disabled="actions.scan" aria-label="重新扫描设备" @click="triggerDetect()">{{actions.scan ? '扫描中…' : '重新扫描'}}</button>
+                        <button class="tool-btn" aria-label="打开移动端页面" @click="openWap">移动端页</button>
+                    </div>
+                </div>
 
-                                    <span class="speed">
-
-                                        {{Math.round((item.content.transferred / 1000 / 1000) / (item.content.elapsed / 1000) * 100) / 100}}
-                                        M/s - {{Math.round(item.content.elapsed/ 1000)}}s
-                                    </span>
-                                    <span class="total">
-
-                                        {{(item.content.transferred/1000/1000).toFixed(3)}} /
-                                        <i>{{(item.content.total/1000/1000).toFixed(3)}} M</i>
-                                    </span>
-
+                <div class="messages-wrap">
+                    <div class="messages" ref="messagesPanel" @scroll.passive="onMessagesScroll">
+                        <template v-if="activeSession && activeMessages.length">
+                            <article
+                                v-for="message in activeMessages"
+                                :key="message._id"
+                                class="message-row"
+                                :class="message.direction">
+                                <div class="message-meta">
+                                    <span class="sender-pill">{{message.direction === 'out' ? '我' : activeSession.hostName}}</span>
+                                    <span>{{formatTime(message.time)}}</span>
                                 </div>
-                               
-                            </i-circle>
-                            <a class="op" href="#"  v-if="item.contentType=='file' && item.content.status=='sending'"
-                            @click.prevent="filePause(item)" style="position: absolute;top: 0px;left: 0;width: 100%;height: 332px;background-color: rgba(255, 255, 255, 0.7);">
-                            <Icon type="ios-pause" size="100" style="line-height: 332px;" />
-                        </a>
-                            <a class="op" href="#"  v-if="item.contentType=='file' && item.content.status=='paused'"
-                            @click.prevent="fileResume(item)" style="position: absolute;top: 0px;left: 0;width: 100%;height: 332px;background-color: rgba(255, 255, 255, 0.7);">
-                            <Icon type="ios-play" size="100" style="line-height: 332px;" />
-                        </a>
-                        </Card>
-                    </i-col>
-                    <i-col :span="item.type==2?2:(runTime.imgPreView==index ?2:10)"></i-col>
-                </Row>
 
+                                <div class="bubble" v-if="message.type === 'text'">
+                                    <div class="text-content" v-html="parseText(message.content)"></div>
+                                </div>
 
-            </Scroll>
+                                <div class="bubble" v-else-if="message.type === 'img'">
+                                    <img
+                                        :src="message.content"
+                                        :class="{preview: imgPreView === message._id}"
+                                        alt="聊天图片"
+                                        @click="imgPreView = imgPreView === message._id ? '' : message._id">
+                                </div>
 
-            <Modal v-model="modal.show" @on-ok="modalOK">
-                <p>{{modal.msg}}</p>
-            </Modal>
-            <Modal v-model="androidModal" title="安卓版下载" >
-                <p> 百度：<a href="#" @click.prevent="app.openUrl('https://pan.baidu.com/s/1zTHq4KZ4LK1_gZ99jGqhpA?pwd=fhwu')">https://pan.baidu.com/s/1zTHq4KZ4LK1_gZ99jGqhpA?pwd=fhwu</a></p>
-                <p> 夸克：<a href="#" @click.prevent="app.openUrl('https://pan.quark.cn/s/5cc062405633')">https://pan.quark.cn/s/5cc062405633</a></p>
-            </Modal>
-        </Layout>
-        <a href="#" class="float-btns" id="android" @click.prevent="androidModal = true">
-            <Icon type="logo-android" size="35" />
-        </a>
-        <a href="#" class="float-btns" id="pull-drawer" @click.prevent="drawer=true">
-            <!-- <Icon type="md-arrow-dropright"  size="30"/> -->
-            <Icon type="ios-cog-outline" size="35" />
-        </a>
+                                <div class="bubble" v-else-if="message.type === 'file'">
+                                    <div class="file-card">
+                                        <div class="file-title">
+                                            <strong>{{message.content.name}}</strong>
+                                            <span class="file-type">{{(message.content.name || 'file').split('.').pop().slice(0, 4)}}</span>
+                                        </div>
+                                        <div class="progress-bar">
+                                            <span :style="{width: filePercent(message) + '%'}"></span>
+                                        </div>
+                                        <div class="file-grid">
+                                            <span>状态 {{formatStatus(message)}}</span>
+                                            <span>进度 {{filePercent(message)}}%</span>
+                                            <span>速度 {{formatSpeed(message)}}</span>
+                                            <span>{{formatSize(message.progress.transferred)}}</span>
+                                            <span>总计 {{formatSize(message.progress.total)}}</span>
+                                        </div>
+                                        <div class="file-actions">
+                                            <button class="action-btn" @click="openMessageFile(message)">打开目录</button>
+                                            <button class="action-btn" @click="copyMessage(message)">复制路径</button>
+                                            <button class="action-btn" v-if="message.status === 'sending'" @click="pauseFile(message)">暂停</button>
+                                            <button class="action-btn" v-if="message.status === 'paused'" @click="resumeFile(message)">继续</button>
+                                            <button class="action-btn danger" v-if="message.status === 'sending' || message.status === 'paused'" @click="cancelFile(message)">取消</button>
+                                        </div>
+                                    </div>
+                                </div>
 
-        <Drawer title="Settings" placement="left" :closable="false" v-model="drawer">
-            <Divider :class="'ld'" orientation="left">设置本机名称</Divider>
-            <Row>
-                <i-col span="20">
-                    <i-input  size="small" :value="settings.name" @on-blur="if($event.target.composing)return;settings.name =$event.target.value;"></i-input>
-                </i-col>
-                <i-col span="4">
-                    <i-button type="info" size="small" @click="app.detect()">ok</i-button>
-                </i-col>
-            </Row>
-            <Divider :class="'ld'" orientation="left">设置本机IP</Divider>
-            <Row>
-                <i-col span="20">
-                    <i-input  size="small" :value="settings.localIp" @on-blur="if($event.target.composing)return;settings.localIp =$event.target.value;"></i-input>
-                </i-col>
-                <i-col span="4">
-                    <i-button type="info" size="small" @click="app.detect()">ok</i-button>
-                </i-col>
-            </Row>
-            <Divider :class="'ld'" orientation="left">扫描其他网段的主机</Divider>
-            <Row>
-                <i-col span="20">
-                    <i-input size="small" style="width: 120px;" :placeHolder="ipPrefix" :value="settings.otherIpSeg" @on-blur="if($event.target.composing)return;settings.otherIpSeg =$event.target.value;"></i-input> .0~255
-                </i-col>
-                <i-col span="4">
-                    <i-button type="info" size="small" @click="app.detect(settings.otherIpSeg)">go</i-button>
-                </i-col>
-            </Row>
-            <Divider :class="'ld'" orientation="left">目录分享</Divider>
-            <Row>
-                <i-col span="18"><a v-on:click="app.selectPath('sharePath')">{{settings.sharePath}}</a>
-                </i-col>
-                <i-col span="2"><a v-on:click="app.openShareUrl()"><Icon type="ios-open-outline" /></a>
-                </i-col>
-                <i-col span="4">
-                    <i-switch v-model="settings.sharing" @on-change="(s)=>{if(s)app.openShareUrl();}" size="small"></i-switch>
-                </i-col>
-            </Row>
-            <Divider :class="'ld'" orientation="left">接收目录</Divider>
-            <Row>
-                
-                <i-col span="24"><a v-on:click="app.selectPath('downloadPath')">{{settings.downloadPath}}</a>
-                </i-col>
-            </Row>
-            <Divider :class="'ld'" orientation="left">暗号</Divider>
-            <Row>
-                <i-col span="20">
-                    <i-input  size="small" :value="settings.findingCode.code" @on-blur="if($event.target.composing)return;settings.findingCode.code =$event.target.value;"></i-input>
-                </i-col>
-                <i-col span="4">
-                    <i-button type="info" size="small" >ok</i-button>
-                </i-col>
-                <i-col span="24">
-                    仅相同暗号的主机可以找到我:<i-switch v-model="settings.findingCode.isOnly" size="small"></i-switch>
-                </i-col>
-            </Row>
-            <Divider :class="'ld'" orientation="left">高级设置</Divider>
-            <Row :title="'若不清楚此项的含义，则保持默认'" :class="'bottom-line'">
+                                <div class="msg-actions">
+                                    <button class="action-btn" v-if="message.type !== 'file'" @click="copyMessage(message)">复制</button>
+                                    <button class="action-btn" v-if="message.type === 'img'" @click="saveImg(message.content)">保存</button>
+                                    <button class="action-btn danger" @click="removeMessage(message)">删除记录</button>
+                                </div>
+                            </article>
+                            <div ref="messageEnd"></div>
+                        </template>
 
-                <i-col span="10">设置本机端口:</i-col>
-                <i-col span="14">
-                    <i-input  size="small"  :number="true" :max="65535" :min="0" :step="1" :value="settings.localPort" @on-blur="if($event.target.composing)return;settings.localPort =$event.target.value;"></i-input>
-                </i-col>
-                <i-col span="24" :class="'info'">
-                    点击右上角logo > 完全退出，重新进入方可生效
-                </i-col>
-            </Row>
-            <Row :title="'建议与本机端口保持一致'" :class="'bottom-line'">
+                        <div v-else class="empty">
+                            <div class="empty-card">
+                                <h2>{{activeSession ? '这个终端还没有消息' : '选择一个终端'}}</h2>
+                                <p>{{activeSession ? '可以直接在底部输入文字，或选择图片、文件发送。' : '左侧会显示可发送终端和历史交互记录。'}}</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <i-col span="10">设置扫描端口:</i-col>
-                <i-col span="10">
-                    <i-input  size="small"  :number="true" :max="65535" :min="0" :step="1" :value="settings.targetPort" @on-blur="if($event.target.composing)return;settings.targetPort =$event.target.value;"></i-input>
-                </i-col>
-                <i-col span="4">
-                    <i-button type="info" size="small" @click="app.detect()">ok</i-button>
-                </i-col>
-            </Row>
-            <!-- <Row :class="'bottom-line'">
-                <i-col span="24">
-                    任意窗:<i-switch v-model="settings.freeWin" size="small"></i-switch>
-                </i-col>
-                
-            </Row> -->
-            <Row>
-                <i-col span="24">
-                    日志:<i-switch v-model="settings.log" size="small"></i-switch>
-                </i-col>
-                <i-col span="24"><a v-on:click="app.showFile(utools.getPath('documents') + '/jflower.log')">{{utools.getPath('documents') + '/jflower.log'}}</a>
-                </i-col>
-            </Row>
-            
+                    <button v-if="showJumpBottom" class="jump-btn" aria-label="回到底部" @click="scrollMessages">回到底部</button>
+                </div>
+
+                <div class="composer" v-if="activeSession">
+                    <textarea
+                        v-model="composer"
+                        :disabled="!canSend"
+                        placeholder="输入要发送的内容，回车发送，Shift + Enter 换行"
+                        aria-label="聊天输入框"
+                        @keydown.enter.exact.prevent="submitText"></textarea>
+                    <div class="composer-bar">
+                        <div class="hint">{{composerHint}}</div>
+                        <div class="composer-actions">
+                            <button class="tool-btn" :disabled="!canSend || actions.image" aria-label="发送图片" @click="sendImage">{{actions.image ? '处理中…' : '图片'}}</button>
+                            <button class="tool-btn" :disabled="!canSend || actions.file" aria-label="发送文件" @click="sendFile">{{actions.file ? '处理中…' : '文件'}}</button>
+                            <button class="tool-btn primary" :disabled="!canSubmitText" aria-label="发送文字消息" @click="submitText">{{actions.text ? '发送中…' : '发送文字'}}</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </section>
+
+        <Drawer title="设置" placement="right" :closable="false" v-model="drawer" width="360">
+            <div class="setting-line">
+                <Divider orientation="left">本机名称</Divider>
+                <i-input :value="settings.name" @on-blur="settings.name = $event.target.value"></i-input>
+            </div>
+
+            <div class="setting-line">
+                <Divider orientation="left">本机 IP</Divider>
+                <i-input :value="settings.localIp" @on-blur="settings.localIp = $event.target.value"></i-input>
+            </div>
+
+            <div class="setting-line">
+                <Divider orientation="left">扫描其他网段</Divider>
+                <i-input :value="settings.otherIpSeg" :placeholder="ipPrefix" @on-blur="settings.otherIpSeg = $event.target.value"></i-input>
+                <div style="margin-top:10px;">
+                    <button class="tool-btn" :disabled="actions.scan" @click="triggerDetect(settings.otherIpSeg)">{{actions.scan ? '扫描中…' : '扫描该网段'}}</button>
+                </div>
+            </div>
+
+            <div class="setting-line">
+                <Divider orientation="left">目录分享</Divider>
+                <a class="path-link" @click="selectSharePath">{{settings.sharePath}}</a>
+                <div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;">
+                    <span>开启分享</span>
+                    <i-switch v-model="settings.sharing"></i-switch>
+                </div>
+            </div>
+
+            <div class="setting-line">
+                <Divider orientation="left">接收目录</Divider>
+                <a class="path-link" @click="selectDownloadPath">{{settings.downloadPath}}</a>
+            </div>
+
+            <div class="setting-line">
+                <Divider orientation="left">暗号</Divider>
+                <i-input :value="settings.findingCode.code" @on-blur="settings.findingCode.code = $event.target.value"></i-input>
+                <div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;">
+                    <span>仅相同暗号可发现我</span>
+                    <i-switch v-model="settings.findingCode.isOnly"></i-switch>
+                </div>
+            </div>
+
+            <div class="setting-line">
+                <Divider orientation="left">高级设置</Divider>
+                <p class="hint">修改端口后需要完全退出插件再重新进入。</p>
+                <i-input :value="settings.localPort" @on-blur="settings.localPort = $event.target.value"></i-input>
+                <div style="height:10px;"></div>
+                <i-input :value="settings.targetPort" @on-blur="settings.targetPort = $event.target.value"></i-input>
+            </div>
+
+            <div class="setting-line">
+                <Divider orientation="left">日志</Divider>
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                    <span>启用日志</span>
+                    <i-switch v-model="settings.log"></i-switch>
+                </div>
+                <a class="path-link" @click="openLogFile">{{utools.getPath('documents') + '/jflower.log'}}</a>
+            </div>
         </Drawer>
     </div>
-   
 </body>
 
 </html>

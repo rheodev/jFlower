@@ -12,7 +12,529 @@ const {
 const Clients = require('./clients');
 const utils = require('./utils');
 
-//var runTime = require('./runtime');
+function decodeName(name) {
+    if (!name) return '';
+    try {
+        return decodeURIComponent(name);
+    } catch (e) {
+        return name;
+    }
+}
+
+function renderWapPage() {
+    return `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>jFlower Chat</title>
+    <style>
+        :root {
+            --bg: #f5ecdf;
+            --panel: rgba(255, 250, 244, 0.88);
+            --panel-strong: #fffaf2;
+            --panel-muted: rgba(255, 255, 255, 0.66);
+            --line: rgba(72, 47, 20, 0.12);
+            --ink: #2f2417;
+            --muted: #7f6a53;
+            --accent: #c86f31;
+            --accent-soft: rgba(200, 111, 49, 0.12);
+            --bubble-in: #fffdfa;
+            --bubble-out: #2f2417;
+            --bubble-out-ink: #fff3e3;
+            --shadow: 0 18px 46px rgba(62, 42, 20, 0.12);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: var(--ink);
+            font-family: "Avenir Next", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(200, 111, 49, 0.2), transparent 28%),
+                radial-gradient(circle at top right, rgba(121, 153, 115, 0.14), transparent 26%),
+                linear-gradient(180deg, #f0e4d1 0%, var(--bg) 42%, #ebe2d6 100%);
+        }
+
+        button:focus-visible,
+        a:focus-visible {
+            outline: 3px solid rgba(200, 111, 49, 0.28);
+            outline-offset: 2px;
+        }
+
+        .shell {
+            padding: 14px 12px 20px;
+        }
+
+        .hero, .sessions, .chat {
+            border: 1px solid var(--line);
+            background: var(--panel);
+            backdrop-filter: blur(18px);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .hero {
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .hero-top, .hero-stats, .chat-head, .file-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .badge,
+        .hero-stats span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 32px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            color: var(--accent);
+            background: var(--accent-soft);
+            border: 1px solid rgba(200, 111, 49, 0.1);
+        }
+
+        .hero-stats {
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .hero-stats span {
+            color: var(--muted);
+            background: rgba(255, 255, 255, 0.62);
+        }
+
+        .hero-stats strong {
+            color: var(--ink);
+        }
+
+        .title {
+            margin: 12px 0 4px;
+            font-size: 28px;
+            line-height: 0.96;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+        }
+
+        .meta {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .toolbar {
+            margin-top: 14px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .toolbar a, .toolbar button {
+            appearance: none;
+            min-height: 44px;
+            border: 1px solid rgba(72, 47, 20, 0.1);
+            padding: 10px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            color: var(--ink);
+            background: rgba(255, 255, 255, 0.78);
+            text-decoration: none;
+        }
+
+        .sessions {
+            padding: 10px;
+            overflow-x: auto;
+            white-space: nowrap;
+            margin-bottom: 12px;
+        }
+
+        .session-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 150px;
+            margin-right: 10px;
+            padding: 12px 14px;
+            border-radius: 20px;
+            border: 1px solid transparent;
+            background: var(--panel-muted);
+            color: var(--ink);
+            text-align: left;
+        }
+
+        .session-chip.active {
+            border-color: rgba(200, 111, 49, 0.3);
+            background: var(--panel-strong);
+            box-shadow: inset 0 0 0 1px rgba(200, 111, 49, 0.08);
+        }
+
+        .session-avatar {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 14px;
+            flex: none;
+            background: linear-gradient(135deg, rgba(200, 111, 49, 0.16), rgba(89, 138, 98, 0.12));
+            color: #a5521d;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .session-copy {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        .session-copy strong,
+        .session-copy small {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .session-copy small {
+            color: var(--muted);
+        }
+
+        .chat {
+            min-height: 58vh;
+            padding: 16px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: #cbb89f;
+            flex: none;
+        }
+
+        .status-dot.online {
+            background: #5f9c67;
+            box-shadow: 0 0 0 6px rgba(95, 156, 103, 0.12);
+        }
+
+        .messages {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .message {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-width: 90%;
+        }
+
+        .message.out {
+            align-self: flex-end;
+            text-align: right;
+        }
+
+        .message .time {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .bubble {
+            padding: 14px 15px;
+            border-radius: 20px;
+            background: var(--bubble-in);
+            border: 1px solid rgba(72, 47, 20, 0.08);
+            box-shadow: 0 10px 24px rgba(48, 34, 18, 0.08);
+            word-break: break-word;
+            line-height: 1.7;
+        }
+
+        .message.out .bubble {
+            background: var(--bubble-out);
+            color: var(--bubble-out-ink);
+            border-color: transparent;
+        }
+
+        .bubble img {
+            display: block;
+            max-width: 100%;
+            border-radius: 16px;
+        }
+
+        .file-card {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .file-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .file-top strong {
+            line-height: 1.5;
+        }
+
+        .file-type {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 42px;
+            height: 26px;
+            padding: 0 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 800;
+            color: #a5521d;
+            background: rgba(200, 111, 49, 0.12);
+        }
+
+        .message.out .file-type {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff1de;
+        }
+
+        .file-meta {
+            color: inherit;
+            font-size: 12px;
+            opacity: 0.82;
+        }
+
+        .progress {
+            overflow: hidden;
+            height: 6px;
+            border-radius: 999px;
+            background: rgba(127, 106, 83, 0.14);
+        }
+
+        .progress span {
+            display: block;
+            height: 100%;
+            width: 0;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #c86f31, #dd9958);
+        }
+
+        .empty {
+            padding: 36px 12px;
+            text-align: center;
+            color: var(--muted);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.54);
+            border: 1px solid rgba(72, 47, 20, 0.08);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <section class="hero">
+            <div class="hero-top">
+                <div class="badge">jFlower Chat</div>
+                <div class="badge" id="refreshStatus">等待刷新</div>
+            </div>
+            <div class="title" id="localTitle">正在连接…</div>
+            <div class="meta" id="localMeta">准备读取本机会话</div>
+            <div class="hero-stats">
+                <span><strong id="sessionCount">0</strong> 个会话</span>
+                <span><strong id="shareState">未开启</strong> 目录分享</span>
+            </div>
+            <div class="toolbar">
+                <a href="/share" target="_blank" rel="noreferrer">打开目录分享</a>
+                <button id="manualRefresh" type="button">立即刷新</button>
+            </div>
+        </section>
+        <section class="sessions" id="sessions"></section>
+        <section class="chat">
+            <div class="chat-head">
+                <div>
+                    <div class="title" id="sessionTitle" style="font-size:22px;margin:0 0 4px;">暂无会话</div>
+                    <div class="meta" id="sessionMeta">等待设备上线</div>
+                </div>
+                <div class="status-dot" id="sessionDot"></div>
+            </div>
+            <div class="messages" id="messages"></div>
+        </section>
+    </div>
+    <script>
+        const state = {
+            sessions: [],
+            activeId: '',
+        };
+
+        function escapeHtml(text) {
+            return String(text || '').replace(/[&<>"']/g, (char) => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[char]));
+        }
+
+        function initials(text) {
+            const value = String(text || 'JF').trim();
+            if (!value) return 'JF';
+            return value.length <= 2 ? value.toUpperCase() : value.slice(0, 2).toUpperCase();
+        }
+
+        function formatTime(value) {
+            if (!value) return '';
+            const date = new Date(value);
+            return date.toLocaleString('zh-CN', {
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function formatSize(size) {
+            if (!size) return '0 B';
+            const units = ['B', 'KB', 'MB', 'GB'];
+            let value = size;
+            let index = 0;
+            while (value >= 1024 && index < units.length - 1) {
+                value = value / 1024;
+                index++;
+            }
+            return value.toFixed(value >= 100 ? 0 : 1) + ' ' + units[index];
+        }
+
+        function currentSession() {
+            return state.sessions.find((session) => session.id === state.activeId) || state.sessions[0] || null;
+        }
+
+        function renderSessions() {
+            const el = document.getElementById('sessions');
+            if (!state.sessions.length) {
+                el.innerHTML = '<div class="empty">暂无在线或历史设备</div>';
+                return;
+            }
+
+            el.innerHTML = state.sessions.map((session) => {
+                const active = session.id === state.activeId ? 'active' : '';
+                const last = session.messages.length ? session.messages[session.messages.length - 1] : null;
+                const preview = last ? (last.type === 'text' ? String(last.content).slice(0, 18) : last.type === 'img' ? '图片' : '文件') : '暂无消息';
+                return '<button class="session-chip ' + active + '" data-session-id="' + escapeHtml(session.id) + '">' +
+                    '<span class="session-avatar">' + initials(session.hostName) + '</span>' +
+                    '<span class="session-copy">' +
+                    '<strong>' + escapeHtml(session.hostName) + '</strong>' +
+                    '<small>' + escapeHtml(session.ip || '未知 IP') + '</small>' +
+                    '<small>' + escapeHtml(preview) + '</small>' +
+                    '</span>' +
+                '</button>';
+            }).join('');
+
+            el.querySelectorAll('[data-session-id]').forEach((node) => {
+                node.addEventListener('click', () => {
+                    state.activeId = node.getAttribute('data-session-id');
+                    renderAll();
+                });
+            });
+        }
+
+        function renderMessages() {
+            const session = currentSession();
+            const titleEl = document.getElementById('sessionTitle');
+            const metaEl = document.getElementById('sessionMeta');
+            const dotEl = document.getElementById('sessionDot');
+            const messagesEl = document.getElementById('messages');
+
+            if (!session) {
+                titleEl.textContent = '暂无会话';
+                metaEl.textContent = '等待设备上线';
+                dotEl.className = 'status-dot';
+                messagesEl.innerHTML = '<div class="empty">进入插件并完成一次局域网扫描后，这里会显示聊天记录。</div>';
+                return;
+            }
+
+            titleEl.textContent = session.hostName;
+            metaEl.textContent = (session.ip || '未知 IP') + ' · ' + (session.online ? '在线' : '离线');
+            dotEl.className = 'status-dot' + (session.online ? ' online' : '');
+
+            if (!session.messages.length) {
+                messagesEl.innerHTML = '<div class="empty">这个设备还没有消息。</div>';
+                return;
+            }
+
+            messagesEl.innerHTML = session.messages.map((message) => {
+                const file = message.type === 'file' ? message.content || {} : null;
+                let body = '';
+                if (message.type === 'text') {
+                    body = '<div class="bubble">' + escapeHtml(message.content) + '</div>';
+                } else if (message.type === 'img') {
+                    body = '<div class="bubble"><img src="' + message.content + '" alt="image" /></div>';
+                } else if (message.type === 'file') {
+                    const percent = message.progress && message.progress.percent ? message.progress.percent : 0;
+                    body = '<div class="bubble"><div class="file-card">' +
+                        '<div class="file-top"><strong>' + escapeHtml(file.name || '文件') + '</strong><span class="file-type">' + escapeHtml(((file.name || 'file').split('.').pop() || 'file').slice(0, 4)) + '</span></div>' +
+                        '<div class="file-meta"><span>' + escapeHtml(message.status || '') + '</span><span>' + percent + '%</span></div>' +
+                        '<div class="progress"><span style="width:' + percent + '%"></span></div>' +
+                        '<div class="file-meta"><span>' + formatSize(message.progress.transferred) + '</span><span>' + formatSize(message.progress.total) + '</span></div>' +
+                    '</div></div>';
+                }
+                return '<div class="message ' + message.direction + '">' +
+                    '<div class="time">' + formatTime(message.time) + '</div>' +
+                    body +
+                '</div>';
+            }).join('');
+        }
+
+        function renderAll() {
+            if (!currentSession() && state.sessions.length) {
+                state.activeId = state.sessions[0].id;
+            }
+            renderSessions();
+            renderMessages();
+        }
+
+        async function refresh() {
+            try {
+                const response = await fetch('/chatState?_=' + Date.now(), { cache: 'no-store' });
+                const data = await response.json();
+                state.sessions = data.sessions || [];
+                if (!state.activeId && state.sessions.length) {
+                    state.activeId = state.sessions[0].id;
+                }
+                document.getElementById('localTitle').textContent = (data.settings && data.settings.name ? data.settings.name : 'jFlower') + ' · ' + (data.localIp || '未获取到本机 IP');
+                document.getElementById('localMeta').textContent = '端口 ' + ((data.settings && data.settings.localPort) || '') + ' · 最近在局域网内同步会话';
+                document.getElementById('sessionCount').textContent = state.sessions.length;
+                document.getElementById('shareState').textContent = data.settings && data.settings.sharing ? '已开启' : '未开启';
+                document.getElementById('refreshStatus').textContent = '已刷新 ' + new Date().toLocaleTimeString('zh-CN');
+                renderAll();
+            } catch (error) {
+                document.getElementById('refreshStatus').textContent = '刷新失败';
+            }
+        }
+
+        document.getElementById('manualRefresh').addEventListener('click', refresh);
+        refresh();
+        setInterval(refresh, 4000);
+    </script>
+</body>
+</html>`;
+}
 
 class MyIncome extends http.IncomingMessage {
 
@@ -100,6 +622,8 @@ var server = {
                 this['on_share'](req, res);
             else if (req.url.indexOf('/wap') === 0)
                 this['on_wap'](req, res);
+            else if (req.url.indexOf('/chatState') === 0)
+                this['on_chatState'](req, res);
             else {
                 res.writeHead(200, {
                     'Content-Type': 'text/plain' + ';charset=utf-8'
@@ -298,6 +822,13 @@ var server = {
     },
     on_getFile: function (req, res) {
         let h = runTime.getHistory(req.headers.key);
+        if (!h) {
+            res.writeHead(404, {
+                'Content-Type': 'text/plain' + ';charset=utf-8'
+            });
+            res.end();
+            return;
+        }
         console.log(h);
         let runData = h.content;
         let realPath = runData.path;
@@ -337,8 +868,9 @@ var server = {
 
             runData.status = 'sending';
             runData.startTime = new Date().getTime();
-            transferred = 0;
-            elapsed = 0;
+            var transferred = 0;
+            var elapsed = 0;
+            this.RSpool[req.headers.key] = [res, rs];
             rs.on('data', function (chunk) { //console.log('server.data')
                 transferred += chunk.length;
                 elapsed = (new Date().getTime()) - runData.startTime;
@@ -364,6 +896,7 @@ var server = {
                     elapsed: elapsed,
                     status: 'completed'
                 });
+                delete server.RSpool[req.headers.key];
                 res.end();
             });
             rs.on('error', function (err) {
@@ -372,6 +905,7 @@ var server = {
                     elapsed: elapsed,
                     status: 'paused'
                 });
+                delete server.RSpool[req.headers.key];
                 res.writeHead(500, {
                     'Content-Type': 'text/plain' + ';charset=utf-8'
                 });
@@ -383,6 +917,7 @@ var server = {
                     elapsed: elapsed,
                     status: 'paused'
                 });
+                delete server.RSpool[req.headers.key];
                 rs.destroy();
             });
             req.on('error', function (err) {
@@ -391,6 +926,7 @@ var server = {
                     elapsed: elapsed,
                     status: 'paused'
                 });
+                delete server.RSpool[req.headers.key];
                 rs.destroy();
             });
             req.on('end', function (err) {
@@ -399,101 +935,24 @@ var server = {
                     elapsed: elapsed,
                     status: 'paused'
                 });
+                delete server.RSpool[req.headers.key];
                 rs.destroy();
             });
 
         });
     },
     on_wap: function (req, res) {
-
-        var pathname = 'aaa';
-        var realPath = './ui/wap.html';
-        fs.exists(realPath, function (exists) {
-            if (!exists) {
-                res.writeHead(404, {
-                    'Content-Type': 'text/plain' + ';charset=utf-8'
-                });
-
-                res.write("This request URL " + pathname + " was not found on this server.[jFlower]");
-                res.end();
-            } else {
-
-                //判断文件 或 目录
-                fs.stat(realPath, function (err, stats) {
-
-                    if (stats.isFile()) { //文件
-
-
-                        let ext = path.extname(realPath);
-                        ext = ext ? ext.slice(1) : 'unknown';
-                        var contentType = mime[ext] || "application/octet-stream";
-                        console.log(contentType);
-                        if (/(audio|video)/.test(contentType)) {
-                            //断点续传，获取分段的位置
-                            var range = req.headers.range;
-                            if (range) {
-                                //替换、切分，请求范围格式为：Content-Range: bytes 0-2000/4932
-                                var positions = range.replace(/bytes=/, "").split("-");
-                                //获取客户端请求文件的开始位置
-                                var start = parseInt(positions[0]);
-                                //获得文件大小
-                                var total = stats.size;
-                                //获取客户端请求文件的结束位置
-                                var end = positions[1] ? parseInt(positions[1], 10) : total - 1;
-                                //获取需要读取的文件大小
-                                var chunksize = (end - start) + 1;
-                                res.writeHead(206, {
-                                    "Content-Range": "bytes " + start + "-" + end + "/" + total,
-                                    "Accept-Ranges": "bytes",
-                                    "Content-Length": chunksize,
-                                    "Content-Type": contentType
-                                });
-                            } else
-                                res.writeHead(200, {
-                                    "Accept-Ranges": "bytes",
-                                    "Content-Length": stats.size,
-                                    "Content-Type": contentType
-                                });
-
-                        } else {
-                            res.writeHead(200, {
-                                'Content-Type': contentType
-                            });
-                        }
-                        var rs = fs.createReadStream(realPath, {
-                            start: start,
-                            end: end
-                        });
-
-                        rs.on('ready', function () {
-                            rs.pipe(res);
-                        });
-                        rs.on('end', function () {
-                            res.end();
-                        });
-                        rs.on('error', function (err) {
-                            res.writeHead(500, {
-                                'Content-Type': 'text/plain' + ';charset=utf-8'
-                            });
-                            res.end(err);
-                        });
-
-
-
-
-                    } else if (stats.isDirectory()) {
-
-                        res.writeHead(403, {
-                            'Content-Type': 'text/plain' + ';charset=utf-8'
-                        });
-                        res.end();
-                    }
-
-                });
-
-
-            }
+        res.writeHead(200, {
+            'Content-Type': 'text/html;charset=utf-8'
         });
+        res.end(renderWapPage());
+    },
+    on_chatState: function (req, res) {
+        res.writeHead(200, {
+            'Content-Type': 'application/json;charset=utf-8',
+            'Cache-Control': 'no-store'
+        });
+        res.end(JSON.stringify(runTime.getChatState()));
     },
     on_detect: function (req, res) {
         if (!runTime.settings.canBeFound) {
@@ -524,7 +983,7 @@ var server = {
     },
     on_close: function (req, res) {
         res.end();
-        _this.instance.close();
+        this.instance && this.instance.close();
     },
     on_text: function (req, res) {
         var _this = this;
@@ -546,7 +1005,7 @@ var server = {
             //console.log('ip', req.ip)
             runTime.addHistory({
                 ip: req.headers.ip,
-                hostName: runTime.hosts.ips[req.headers.ip]?runTime.hosts.ips[req.headers.ip].hostName:req.headers.name,
+                hostName: runTime.hosts.ips[req.headers.ip]?runTime.hosts.ips[req.headers.ip].hostName:decodeName(req.headers.name),
                 id: '',
                 type: 1, //1 from,2 to
                 content: rawData,
@@ -571,7 +1030,7 @@ var server = {
 
         var key = runTime.addHistory({
             ip: req.headers.ip,
-            hostName: runTime.hosts.ips[req.headers.ip]?runTime.hosts.ips[req.headers.ip].hostName:req.headers.name,
+            hostName: runTime.hosts.ips[req.headers.ip]?runTime.hosts.ips[req.headers.ip].hostName:decodeName(req.headers.name),
             id: '',
             type: 1,
             content: runData,
@@ -673,6 +1132,7 @@ var server = {
                 ws,
                 (err) => {
                     updateProgress();
+                    delete _this.RSpool[key];
                     if (err) {
                         console.log('err:', err);
                         runData.status = 'error';
@@ -699,7 +1159,7 @@ var server = {
 
             let key = runTime.addHistory({
                 ip: req.headers.ip, //req.ip,
-                hostName: runTime.hosts.ips[req.headers.ip] ? runTime.hosts.ips[req.headers.ip].hostName : req.headers.name,
+                hostName: runTime.hosts.ips[req.headers.ip] ? runTime.hosts.ips[req.headers.ip].hostName : decodeName(req.headers.name),
                 id: '',
                 type: 1, //1 from,2 to
                 content: runData,
@@ -713,14 +1173,35 @@ var server = {
     pauseFileSend: function (key) {
         let h = runTime.getHistory(key);
         console.log(h);
+        if(!h)return;
         let runData = h.content;
         runData.status = 'paused';
+        let pool = this.RSpool[key];
+        if(pool){
+            pool.forEach((target)=>{
+                if(target && typeof target.destroy === 'function'){
+                    target.destroy();
+                }
+            });
+            delete this.RSpool[key];
+        }
     },
     resumeFileSend: function (key) {
         utils.toast('续传只能由接收方发起');
     },
     cancelFileSend: function (key) {
-
+        let h = runTime.getHistory(key);
+        if(!h)return;
+        h.content.status = 'canceled';
+        let pool = this.RSpool[key];
+        if(pool){
+            pool.forEach((target)=>{
+                if(target && typeof target.destroy === 'function'){
+                    target.destroy();
+                }
+            });
+            delete this.RSpool[key];
+        }
     },
 
     // cancelFileSend:function(key){
@@ -768,7 +1249,7 @@ var server = {
             Utils.toast(`收到[图片]已复制到剪贴板`);
             runTime.addHistory({
                 ip: req.headers.ip,
-                hostName: runTime.hosts.ips[req.headers.ip]?runTime.hosts.ips[req.headers.ip].hostName :req.headers.name,
+                hostName: runTime.hosts.ips[req.headers.ip]?runTime.hosts.ips[req.headers.ip].hostName :decodeName(req.headers.name),
                 id: '',
                 type: 1, //1 from,2 to
                 content: rawData,

@@ -14,7 +14,7 @@ for (let j = 0; j < 256; j++) {
     for (let i = 0; i < 256; i++) {
         var ip = ipSeg.join('.') + '.' + j + '.' + i;
         (function (ip) {
-            http.get('http://'+ip+':8891/detect', {
+            http.get('http://'+ip+':18891/detect', {
                 headers: {
                     'ip': localIp,
                     'id': utools.getLocalId()

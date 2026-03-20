@@ -115,8 +115,10 @@ module.exports = {
     },
     removeFeature:function(ip){
         utools.removeFeature(ip);
+        if(!runTime.hosts.ips[ip]) return;
         let id = runTime.hosts.ips[ip].id;
-        delete runTime.hosts.ips[ip] ,runTime.hosts.ids[id];
+        delete runTime.hosts.ips[ip];
+        if(id) delete runTime.hosts.ids[id];
     },
     
 

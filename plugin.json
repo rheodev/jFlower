@@ -5,7 +5,7 @@
 	"homepage": "https://github.com/dubox/jFlower",
 	"main": "ui/index.html",
 	"version": "1.5.5",
-	"logo": "ui/img/logo.png",
+	"logo": "logo.png",
 	"features": [{
 			"code": "main",
 			"explain": "jFlower(局发)",

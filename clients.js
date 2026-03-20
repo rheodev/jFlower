@@ -27,6 +27,8 @@ module.exports = {
     runData.elapsed = 0;
     runData.startTime = (new Date()).getTime();
     runData.status = 'sending';
+    var transferred = 0;
+    var elapsed = 0;
     // rs.on('data', function (chunk) {
     //   runData.transferred += chunk.length;
     //   runData.elapsed = new Date().getTime() - runData.startTime;
@@ -85,9 +87,7 @@ module.exports = {
           console.log('finish:', (new Date()).getTime());
           runData.status = 'completed';
           runTime.updHistory();
-          //utools.outPlugin();
-          utools.shellShowItemInFolder(target_file);
-          req.end();
+          utools.shellShowItemInFolder(file.path);
         }
       }
     );
@@ -105,14 +105,33 @@ module.exports = {
   },
   cancelFileSend:function(key){
     let h = runTime.getHistory(key);console.log(h);
+    if(!h)return;
     let runData = h.content;
-    runData.status = 'paused';
-    runTime.delHistory(key);
+    runData.status = 'canceled';
+    let pool = this.RSpool[key];
+    if(pool){
+      pool.forEach((target)=>{
+        if(target && typeof target.destroy === 'function'){
+          target.destroy();
+        }
+      });
+      delete this.RSpool[key];
+    }
   },
   pauseFileSend:function(key){
     let h = runTime.getHistory(key);console.log(h);
+    if(!h)return;
     let runData = h.content;
     runData.status = 'paused';
+    let pool = this.RSpool[key];
+    if(pool){
+      pool.forEach((target)=>{
+        if(target && typeof target.destroy === 'function'){
+          target.destroy();
+        }
+      });
+      delete this.RSpool[key];
+    }
   },
   resumeFileSend:function(key){console.log(key);
     this.acceptFile(key);
@@ -120,17 +139,19 @@ module.exports = {
 
   acceptFile:function(key){
     let h = runTime.getHistory(key);console.log(h);
+    if(!h)return;
     let runData = h.content;
 
+    let fstat = fs.statSync(runData.path,{throwIfNoEntry:false});
+    var transferred = fstat ? fstat.size : 0;
+    runData.transferred = transferred;
+
     var ws = fs.createWriteStream(runData.path, {
-      flags: 'w',
+      flags: transferred > 0 ? 'a' : 'w',
     });
     runData.status = 'sending';
     var startTime = new Date().getTime();
-    // runData.startTime || (runData.startTime = startTime);
     var elapsed = runData.elapsed;
-    let fstat = fs.statSync(runData.path,{throwIfNoEntry:false});
-    var transferred = fstat ? fstat.size : 0;
     var updateProgress = function(status){
       Object.assign(runData, {
           transferred: transferred,
@@ -167,17 +188,20 @@ module.exports = {
       },{
         file_name: encodeURI(runData.name),
         key:runData.key,
-        "range": `bytes=${runData.transferred}-`
+        "range": `bytes=${transferred}-`
       });
       req.write('a', 'utf8', () => {
         req.end();
       }); //
+    this.RSpool[key] = [req, ws];
     ws.on("finish",()=>{
       updateProgress('completed');
+      delete this.RSpool[key];
       utools.shellShowItemInFolder(runData.path);
     });
     ws.on("error",()=>{
       updateProgress('paused');
+      delete this.RSpool[key];
     });
     //_this.RSpool[key] = [ws];
   },
@@ -289,18 +313,17 @@ console.log(options);
       });
       res.on('end', () => {
         console.log('res end');
+        if (!cb) return;
         if (res.statusCode == 200 || res.statusCode == 206)
           cb(0,null  ,res);
         else
           cb(new Error(res.statusCode), ip ,res);
-
-          req.end();
       });
     });console.log(req);
 
     req.on('error', (e) => {
       console.error(`请求遇到问题: ${e.message}`);
-      cb(e, ip);
+      if(cb)cb(e, ip);
     });
     req.on('end', (e) => {
       console.log(`req end`);
