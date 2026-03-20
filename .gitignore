@@ -1,0 +1,10 @@
+.idea
+.vscode
+*.iml
+*.log
+*.tmp
+*.bak
+*.swp
+.DS_Store
+node_modules
+dist
